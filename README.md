@@ -1,4 +1,4 @@
-# House Price Prediction (Concise)
+# House Price Prediction
 
 End-to-end ML pipeline predicting California house prices with strong results.
 
@@ -36,7 +36,6 @@ models/
 
 - Best model: XGBoost (top CV RMSE)
 - Consistent preprocessing: saved preprocessor ensures identical train/inference transforms
-- For detailed explanations, see `explain.txt` (kept out of git by request)
 
 ## Requirements
 
