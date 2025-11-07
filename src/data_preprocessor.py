@@ -301,7 +301,9 @@ class HousePricePreprocessor:
         X_capped = X.copy()
         for feature, bounds in self.outlier_bounds.items():
             if feature in X_capped.columns:
-                lower_bound, upper_bound = bounds
+                # bounds is a dict: {'lower': ..., 'upper': ..., 'outliers_capped': ...}
+                lower_bound = bounds.get('lower')
+                upper_bound = bounds.get('upper')
                 X_capped[feature] = X_capped[feature].clip(lower=lower_bound, upper=upper_bound)
         return X_capped
     
