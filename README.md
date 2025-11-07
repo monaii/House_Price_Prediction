@@ -1,172 +1,44 @@
-# House Price Prediction Project
+# House Price Prediction (Concise)
 
-A comprehensive machine learning project for predicting California house prices using the California Housing dataset.
+End-to-end ML pipeline predicting California house prices with strong results.
 
-## Project Overview
+## Results
 
-This project implements an end-to-end machine learning pipeline to predict house prices with the goal of achieving at least 15% improvement over baseline RMSE. The project successfully achieved **62.1% improvement** over baseline.
+- `RMSE`: 0.4392 (original scale)
+- `MAE`: 0.2793
+- `R²`: 0.8528
+- `Baseline RMSE`: 1.1583 → `Improvement`: 62.1% (target exceeded)
 
-## Final Results
+## Quickstart
 
-- **RMSE**: 0.4392 (Original Scale)
-- **MAE**: 0.2793
-- **R²**: 0.8528
-- **Improvement over Baseline**: 62.1%
-- **Target Achievement**: YES (exceeded 15% target)
+- Install: `pip install -r requirements.txt`
+- Train & evaluate: `python src/test_models.py` (writes `results/final_project_report.txt`, saves models in `models/`)
+- Production demo: `python src/ml_pipeline.py` (runs a sample single prediction)
 
 ## Project Structure
 
 ```
-house/
-├── data/
-│   └── california_housing.csv          # Dataset
-├── src/
-│   ├── data_loader.py                  # Data loading utilities
-│   ├── data_preprocessor.py            # Data preprocessing pipeline
-│   ├── eda_analyzer.py                 # Exploratory data analysis
-│   ├── model_trainer.py                # Model training and evaluation
-│   ├── ml_pipeline.py                  # Production prediction pipeline
-│   └── test_*.py                       # Test scripts
-├── models/
-│   ├── preprocessor.pkl                # Trained preprocessor
-│   ├── best_model.pkl                  # Best performing model
-│   └── *.pkl                          # Individual model files
-├── results/
-│   ├── eda_visualizations.png          # EDA plots
-│   └── final_project_report.txt        # Final performance report
-└── README.md                           # This file
+src/
+  data_loader.py        # Load/save dataset
+  eda_analysis.py       # EDA and plots
+  data_preprocessor.py  # Feature engineering, scaling, outliers, target log
+  model_trainer.py      # Model training, CV, tuning, report
+  ml_pipeline.py        # Prediction pipeline (load preprocessor/model, predict)
+  test_preprocessing.py # Preprocessing sanity check
+  test_models.py        # Full training + final report
+results/
+  final_project_report.txt, plots
+models/
+  preprocessor.pkl, best_model.pkl, others
 ```
 
-## Quick Start
+## Notes
 
-### Prerequisites
-
-```bash
-pip install pandas numpy scikit-learn matplotlib seaborn xgboost
-```
-
-### Running the Complete Pipeline
-
-1. **Load and explore data:**
-```bash
-python src/test_eda.py
-```
-
-2. **Preprocess data:**
-```bash
-python src/test_preprocessing.py
-```
-
-3. **Train and evaluate models:**
-```bash
-python src/test_models.py
-```
-
-4. **Use production pipeline:**
-```python
-from src.ml_pipeline import HousePricePredictionPipeline
-
-# Initialize pipeline
-pipeline = HousePricePredictionPipeline()
-
-# Make prediction
-sample_data = {
-    'MedInc': 5.0, 'HouseAge': 10.0, 'AveRooms': 6.0,
-    'AveBedrms': 1.2, 'Population': 3000.0, 'AveOccup': 3.0,
-    'Latitude': 34.0, 'Longitude': -118.0
-}
-prediction = pipeline.predict_single(sample_data)
-print(f"Predicted price: ${prediction:.2f}")
-```
-
-## Features
-
-### Data Preprocessing
-- **Feature Engineering**: 12 new features including polynomial terms, ratios, and density metrics
-- **Outlier Handling**: IQR-based outlier detection and capping
-- **Scaling**: StandardScaler for feature normalization
-- **Target Transformation**: Log transformation for better model performance
-
-### Models Implemented
-- Linear Regression
-- Ridge Regression
-- Lasso Regression
-- ElasticNet
-- Decision Tree
-- Random Forest
-- Gradient Boosting
-- XGBoost (Best Performer)
-- Support Vector Regression
-- K-Nearest Neighbors
-
-### Model Selection
-- Cross-validation for model comparison
-- Hyperparameter tuning with GridSearchCV and RandomizedSearchCV
-- Automated best model selection based on RMSE
-
-## Model Performance
-
-| Model | CV RMSE | Test RMSE | R² Score |
-|-------|---------|-----------|----------|
-| XGBoost (Best) | 0.1345 | 0.1298 | 0.8662 |
-| Random Forest | 0.1385 | - | - |
-| Gradient Boosting | 0.1420 | - | - |
-| Linear Regression | 0.2890 | - | - |
-
-## Data Insights
-
-- **Dataset**: 20,640 California housing records
-- **Features**: 8 original + 12 engineered = 20 total features
-- **Target**: Median house value (log-transformed)
-- **Split**: 80% training, 20% testing
-
-### Key Findings from EDA
-- Strong correlation between median income and house values
-- Geographic clustering of high-value properties
-- Age and room ratios significantly impact pricing
-- Population density affects house values
-
-## Project Achievements
-
-- **Data Loading & EDA**: Complete analysis with visualizations  
-- **Data Preprocessing**: Advanced feature engineering and cleaning  
-- **Model Training**: 10 different algorithms implemented  
-- **Model Evaluation**: Comprehensive performance analysis  
-- **Production Pipeline**: Ready-to-use prediction interface  
-- **Target Achievement**: 62.1% RMSE improvement (exceeded 15% goal)  
-
-## Usage Examples
-
-### Making Predictions
-
-```python
-from src.ml_pipeline import HousePricePredictionPipeline
-
-# Initialize pipeline
-pipeline = HousePricePredictionPipeline()
-
-# Single prediction
-house_data = {
-    'MedInc': 8.0, 'HouseAge': 5.0, 'AveRooms': 7.0,
-    'AveBedrms': 1.0, 'Population': 2500.0, 'AveOccup': 2.8,
-    'Latitude': 37.8, 'Longitude': -122.4
-}
-price = pipeline.predict_single(house_data)
-print(f"Predicted price: ${price:.2f}")
-
-# Batch predictions
-import pandas as pd
-df = pd.DataFrame([house_data])  # Can contain multiple rows
-predictions = pipeline.predict_batch(df)
-```
-
+- Best model: XGBoost (top CV RMSE)
+- Consistent preprocessing: saved preprocessor ensures identical train/inference transforms
+- For detailed explanations, see `explain.txt` (kept out of git by request)
 
 ## Requirements
 
-- Python 3.7+
-- pandas >= 1.3.0
-- numpy >= 1.21.0
-- scikit-learn >= 1.0.0
-- matplotlib >= 3.4.0
-- seaborn >= 0.11.0
-- xgboost >= 1.5.0
+- Python 3.8+
+- See `requirements.txt` for exact package versions
